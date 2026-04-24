@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh 'docker stop app || true'
                 sh 'docker rm app || true'
-                sh 'docker run -d -p 3000:3000 --name app reg-app'
+                sh 'docker run -d -p 3001:3000 --name app reg-app'
             }
         }
 
