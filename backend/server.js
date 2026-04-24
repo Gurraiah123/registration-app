@@ -1,44 +1,62 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const client = require("prom-client");
+const cors = require("cors");
+const { Pool } = require("pg");
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
-// Prometheus metrics
-const register = new client.Registry();
-client.collectDefaultMetrics({ register });
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics();
 
-const httpRequestCounter = new client.Counter({
-  name: "http_requests_total",
-  help: "Total HTTP requests",
+const registerCounter = new client.Counter({
+  name: "register_requests_total",
+  help: "Total registration requests"
 });
 
-register.registerMetric(httpRequestCounter);
+// 🔴 DB CONNECTION
+const pool = new Pool({
+  user: "admin",
+  host: "db",
+  database: "usersdb",
+  password: "admin",
+  port: 5432,
+});
 
-// In-memory users
-let users = [];
+// 🔴 CREATE TABLE
+pool.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    email TEXT
+  );
+`);
 
-// Register API
-app.post("/register", (req, res) => {
+// 🔴 INSERT DATA
+app.post("/register", async (req, res) => {
   const { name, email } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).send("Invalid input");
-  }
+  await pool.query(
+    "INSERT INTO users (name, email) VALUES ($1, $2)",
+    [name, email]
+  );
 
-  users.push({ name, email });
-  httpRequestCounter.inc();
-
+  registerCounter.inc();
   res.send("User registered");
 });
 
-// Metrics endpoint
-app.get("/metrics", async (req, res) => {
-  res.set("Content-Type", register.contentType);
-  res.end(await register.metrics());
+// 🔴 GET DATA
+app.get("/users", async (req, res) => {
+  const result = await pool.query("SELECT * FROM users");
+  res.json(result.rows);
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+// 🔴 METRICS
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
 });
+
+app.listen(3000, () => console.log("Server running"));

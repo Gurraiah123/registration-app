@@ -1,14 +1,5 @@
-<html>
-<body>
-<h2>Register User</h2>
-
-<input id="name" placeholder="Name"/>
-<input id="email" placeholder="Email"/>
-<button onclick="register()">Submit</button>
-
-<script>
 function register() {
-  fetch("http://<EC2-IP>:3000/register", {
+  fetch("http://51.102.95.212:3000/register", {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify({
@@ -17,6 +8,3 @@ function register() {
     })
   }).then(res => res.text()).then(alert);
 }
-</script>
-</body>
-</html>
