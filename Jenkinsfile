@@ -5,7 +5,7 @@ pipeline {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/your-repo/registration-app.git'
+                git 'https://github.com/Gurraiah123/registration-app.git'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Deploy to AWS S3') {
             steps {
-                sh 'aws s3 cp frontend/index.html s3://your-bucket/'
+                sh 'aws s3 cp frontend/index.html s3://registration-app-1/'
             }
         }
     }
