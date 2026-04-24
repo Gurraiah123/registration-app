@@ -1,0 +1,22 @@
+<html>
+<body>
+<h2>Register User</h2>
+
+<input id="name" placeholder="Name"/>
+<input id="email" placeholder="Email"/>
+<button onclick="register()">Submit</button>
+
+<script>
+function register() {
+  fetch("http://<EC2-IP>:3000/register", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value
+    })
+  }).then(res => res.text()).then(alert);
+}
+</script>
+</body>
+</html>
