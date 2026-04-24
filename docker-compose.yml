@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    restart: always
 
   db:
     image: postgres:15
@@ -19,17 +20,26 @@ services:
       POSTGRES_DB: usersdb
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    restart: always
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - backend
 
   grafana:
     image: grafana/grafana
     container_name: grafana
+    restart: always
     ports:
       - "3001:3000"
+
+volumes:
+  pgdata:
