@@ -11,7 +11,7 @@ pipeline {
 
         stage('Build Docker') {
             steps {
-                sh 'docker build -t reg-app -f backend/Dockerfile  .'
+               sh 'docker build -t reg-app ./backend .'
             }
         }
 
