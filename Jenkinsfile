@@ -4,7 +4,7 @@ pipeline {
     environment {
         BACKEND_DIR = 'backend'
         FRONTEND_DIR = 'frontend'
-        EC2_IP = '<YOUR-EC2-IP>'
+        EC2_IP = '18.195.183.15'
     }
 
     stages {
