@@ -11,7 +11,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/your-repo.git'
+                git branch: 'main', url: 'https://github.com/Gurraiah123/registration-app.git'
             }
         }
 
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 dir(FRONTEND_DIR) {
                     sh """
-                    aws s3 sync . s3://your-bucket-name --delete
+                    aws s3 sync . s3://registration-s3-1 --delete
                     """
                 }
             }
